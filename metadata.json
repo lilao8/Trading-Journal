@@ -1,0 +1,5 @@
+{
+  "name": "TradingJournal",
+  "description": "A professional trading journal for options and ETF scalpers to track daily performance and PnL.",
+  "requestFramePermissions": []
+}
