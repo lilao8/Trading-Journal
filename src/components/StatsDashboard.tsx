@@ -53,31 +53,34 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ trades }) => {
   }, [trades]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <StatCard 
-        label="Daily PnL" 
-        value={stats.dailyPnL} 
-        icon={<Calendar size={20} />}
-        isCurrency
-      />
-      <StatCard 
-        label="Monthly PnL" 
-        value={stats.monthlyPnL} 
-        icon={<BarChart3 size={20} />}
-        isCurrency
-      />
-      <StatCard 
-        label="Total Equity PnL" 
-        value={stats.totalPnL} 
-        icon={<Wallet size={20} />}
-        isCurrency
-      />
-      <StatCard 
-        label="Win Rate" 
-        value={stats.winRate * 100} 
-        icon={<TrendingUp size={20} />}
-        suffix="%"
-      />
+    <div className="space-y-8">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard 
+          label="Daily PnL" 
+          value={stats.dailyPnL} 
+          icon={<Calendar size={20} />}
+          isCurrency
+        />
+        <StatCard 
+          label="Monthly PnL" 
+          value={stats.monthlyPnL} 
+          icon={<BarChart3 size={20} />}
+          isCurrency
+        />
+        <StatCard 
+          label="Total Equity PnL" 
+          value={stats.totalPnL} 
+          icon={<Wallet size={20} />}
+          isCurrency
+        />
+        <StatCard 
+          label="Win Rate" 
+          value={stats.winRate * 100} 
+          icon={<TrendingUp size={20} />}
+          suffix="%"
+        />
+      </div>
     </div>
   );
 };
@@ -108,10 +111,10 @@ export const EquityCurve: React.FC<StatsDashboardProps> = ({ trades }) => {
   }, [trades]);
 
   return (
-    <div className="card-brutal p-6 h-[400px]">
+    <div className="glass-card p-6 h-[400px] rounded-2xl">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-serif italic text-lg">Equity Curve</h3>
-        <div className="text-[11px] uppercase font-bold tracking-wider opacity-40">
+        <h3 className="font-serif italic text-lg text-white">Equity Curve</h3>
+        <div className="text-[11px] uppercase font-bold tracking-wider text-zinc-500">
           Cumulative Performance
         </div>
       </div>
@@ -120,38 +123,40 @@ export const EquityCurve: React.FC<StatsDashboardProps> = ({ trades }) => {
           <AreaChart data={chartData}>
             <defs>
               <linearGradient id="colorPnL" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#141414" stopOpacity={0.1}/>
-                <stop offset="95%" stopColor="#141414" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#141414" opacity={0.1} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" opacity={0.05} />
             <XAxis 
               dataKey="date" 
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.5 }}
+              tick={{ fontSize: 10, fontFamily: 'monospace', fill: '#71717a' }}
             />
             <YAxis 
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.5 }}
-              tickFormatter={(val) => `$${val.toFixed(2)}`}
+              tick={{ fontSize: 10, fontFamily: 'monospace', fill: '#71717a' }}
+              tickFormatter={(val) => `$${val.toFixed(0)}`}
             />
             <Tooltip 
               formatter={(value: number) => [formatCurrency(value), 'PnL']}
               contentStyle={{ 
-                backgroundColor: '#fff', 
-                border: '1px solid #141414',
-                borderRadius: '0px',
+                backgroundColor: '#09090b', 
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px',
                 fontFamily: 'monospace',
-                fontSize: '12px'
+                fontSize: '12px',
+                color: '#fff'
               }}
+              itemStyle={{ color: '#10b981' }}
             />
             <Area 
               type="monotone" 
               dataKey="pnl" 
-              stroke="#141414" 
-              strokeWidth={2}
+              stroke="#10b981" 
+              strokeWidth={3}
               fillOpacity={1} 
               fill="url(#colorPnL)" 
             />
@@ -162,19 +167,18 @@ export const EquityCurve: React.FC<StatsDashboardProps> = ({ trades }) => {
   );
 };
 
-
 const StatCard = ({ label, value, icon, isCurrency, suffix = "" }: any) => {
   const isPositive = value >= 0;
   
   return (
-    <div className="card-brutal p-4 flex flex-col justify-between">
+    <div className="glass-card glass-card-hover p-5 flex flex-col justify-between rounded-2xl">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[11px] uppercase font-bold tracking-wider opacity-40">{label}</span>
-        <div className="opacity-20">{icon}</div>
+        <span className="text-[11px] uppercase font-bold tracking-wider text-zinc-500">{label}</span>
+        <div className="text-emerald-500/50">{icon}</div>
       </div>
       <div className={cn(
         "text-2xl font-mono tracking-tighter font-bold",
-        isCurrency && (isPositive ? "text-emerald-600" : "text-rose-600")
+        isCurrency ? (isPositive ? "text-emerald-400" : "text-rose-400") : "text-white"
       )}>
         {isCurrency ? formatCurrency(value) : `${value.toFixed(2)}${suffix}`}
       </div>

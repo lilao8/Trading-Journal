@@ -88,8 +88,8 @@ export const Journal: React.FC = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BookOpen size={24} />
-          <h2 className="font-serif italic text-2xl">Trading Thoughts & Reviews</h2>
+          <BookOpen size={24} className="text-emerald-500" />
+          <h2 className="font-serif italic text-2xl text-white">Trading Thoughts & Reviews</h2>
         </div>
         <button
           onClick={() => {
@@ -101,7 +101,7 @@ export const Journal: React.FC = () => {
             });
             setIsFormOpen(true);
           }}
-          className="btn-brutal flex items-center gap-2"
+          className="btn-glow flex items-center gap-2"
         >
           <Plus size={18} />
           New Entry
@@ -109,13 +109,13 @@ export const Journal: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-20 opacity-40">
-          <p className="font-mono text-sm">Loading journal entries...</p>
+        <div className="flex justify-center py-20">
+          <p className="font-mono text-sm text-zinc-500 animate-pulse">Loading journal entries...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6">
           {reviews.length === 0 ? (
-            <div className="card-brutal p-12 text-center opacity-40 italic">
+            <div className="glass-card p-12 text-center text-zinc-500 italic rounded-2xl">
               No journal entries yet. Start writing your thoughts!
             </div>
           ) : (
@@ -124,34 +124,36 @@ export const Journal: React.FC = () => {
                 key={review.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="card-brutal p-6 space-y-4 group"
+                className="glass-card glass-card-hover p-6 space-y-4 group rounded-2xl"
               >
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-[11px] uppercase font-bold tracking-wider opacity-50">
+                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest text-zinc-500">
                       <Calendar size={12} />
                       {format(new Date(review.date), 'MMMM dd, yyyy')}
                     </div>
-                    <h3 className="font-serif italic text-xl font-bold">{review.title}</h3>
+                    <h3 className="font-serif italic text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
+                      {review.title}
+                    </h3>
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleEdit(review)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                      className="p-2 text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-md transition-colors"
                       title="Edit Entry"
                     >
                       <Edit2 size={16} />
                     </button>
                     <button
                       onClick={() => handleDelete(review.id)}
-                      className="p-2 text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                      className="p-2 text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-md transition-colors"
                       title="Delete Entry"
                     >
                       <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
-                <div className="prose prose-sm max-w-none text-[#141414]/80 whitespace-pre-wrap font-sans leading-relaxed">
+                <div className="text-zinc-400 text-sm leading-relaxed whitespace-pre-wrap font-sans">
                   {review.content}
                 </div>
               </motion.div>
@@ -162,62 +164,65 @@ export const Journal: React.FC = () => {
 
       <AnimatePresence>
         {isFormOpen && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="card-brutal w-full max-w-2xl p-6 relative"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="glass-card w-full max-w-2xl p-8 relative rounded-3xl overflow-hidden"
             >
+              {/* Decorative Glow */}
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 blur-3xl rounded-full"></div>
+              
               <button
                 onClick={() => setIsFormOpen(false)}
-                className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="absolute top-6 right-6 p-2 text-zinc-500 hover:text-white hover:bg-white/5 rounded-full transition-all"
               >
                 <X size={20} />
               </button>
 
-              <h2 className="font-serif italic text-2xl mb-6">
-                {editingReview ? 'Edit Journal Entry' : 'New Journal Entry'}
+              <h2 className="font-serif italic text-3xl mb-8 text-white">
+                {editingReview ? 'Refine Entry' : 'Capture Entry'}
               </h2>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[11px] uppercase font-bold tracking-wider opacity-60">Title</label>
+                    <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Title</label>
                     <input
                       required
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       placeholder="e.g. Weekly Review, Market Sentiment..."
-                      className="w-full border border-black p-2 font-mono focus:outline-none focus:ring-2 focus:ring-black/5"
+                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] uppercase font-bold tracking-wider opacity-60">Date</label>
+                    <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Date</label>
                     <input
                       type="date"
                       required
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                      className="w-full border border-black p-2 font-mono focus:outline-none"
+                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] uppercase font-bold tracking-wider opacity-60">Your Thoughts</label>
+                  <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Your Thoughts</label>
                   <textarea
                     required
-                    rows={10}
+                    rows={8}
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                    className="w-full border border-black p-2 font-sans focus:outline-none resize-none leading-relaxed"
+                    className="w-full bg-zinc-900/50 border border-white/10 p-3 font-sans focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white resize-none leading-relaxed"
                     placeholder="Write your review, market observations, or reminders here..."
                   />
                 </div>
 
                 <div className="pt-4">
-                  <button type="submit" className="btn-brutal w-full text-lg py-3">
+                  <button type="submit" className="btn-glow w-full text-lg py-3">
                     {editingReview ? 'Update Entry' : 'Save Entry'}
                   </button>
                 </div>

@@ -77,24 +77,24 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 pb-20 selection:bg-emerald-500/30">
       {/* Navigation Rail / Header */}
-      <header className="bg-white border-b border-black sticky top-0 z-40">
+      <header className="bg-zinc-950/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-black flex items-center justify-center">
-                <span className="text-white font-serif italic font-bold">S</span>
+              <div className="w-8 h-8 bg-emerald-500 flex items-center justify-center rounded-sm shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                <span className="text-zinc-950 font-serif italic font-bold">S</span>
               </div>
-              <h1 className="font-serif italic text-xl font-bold tracking-tight">ScalpJournal</h1>
+              <h1 className="font-serif italic text-xl font-bold tracking-tight text-white">ScalpJournal</h1>
             </div>
 
             <nav className="flex items-center gap-1">
               <button
                 onClick={() => setActiveTab('dashboard')}
                 className={cn(
-                  "px-4 py-2 text-[11px] uppercase font-bold tracking-widest transition-colors",
-                  activeTab === 'dashboard' ? "bg-black text-white" : "hover:bg-black/5"
+                  "px-4 py-2 text-[11px] uppercase font-bold tracking-widest transition-all duration-300 rounded-md",
+                  activeTab === 'dashboard' ? "bg-emerald-500 text-zinc-950 shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "text-zinc-500 hover:text-zinc-100 hover:bg-white/5"
                 )}
               >
                 Dashboard
@@ -102,8 +102,8 @@ export default function App() {
               <button
                 onClick={() => setActiveTab('journal')}
                 className={cn(
-                  "px-4 py-2 text-[11px] uppercase font-bold tracking-widest transition-colors",
-                  activeTab === 'journal' ? "bg-black text-white" : "hover:bg-black/5"
+                  "px-4 py-2 text-[11px] uppercase font-bold tracking-widest transition-all duration-300 rounded-md",
+                  activeTab === 'journal' ? "bg-emerald-500 text-zinc-950 shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "text-zinc-500 hover:text-zinc-100 hover:bg-white/5"
                 )}
               >
                 Thoughts
@@ -114,13 +114,13 @@ export default function App() {
           <div className="flex items-center gap-4">
             <button 
               onClick={fetchTrades}
-              className="p-2 hover:bg-black/5 rounded-full transition-colors"
+              className="p-2 hover:bg-white/5 rounded-full transition-colors text-zinc-400 hover:text-emerald-500"
               title="Refresh Data"
             >
               <RefreshCw size={18} className={isLoading ? "animate-spin" : ""} />
             </button>
-            <div className="h-6 w-px bg-black/10" />
-            <div className="text-[11px] uppercase font-bold tracking-widest opacity-40">
+            <div className="h-6 w-px bg-white/10" />
+            <div className="text-[11px] uppercase font-bold tracking-widest text-zinc-500">
               {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </div>
           </div>
@@ -129,15 +129,15 @@ export default function App() {
 
       <main className="max-w-7xl mx-auto px-4 pt-8">
         {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 mb-8 flex items-center justify-between">
+          <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-4 mb-8 flex items-center justify-between rounded-lg backdrop-blur-md">
             <span>{error}</span>
-            <button onClick={fetchTrades} className="underline font-bold">Retry</button>
+            <button onClick={fetchTrades} className="underline font-bold hover:text-rose-300">Retry</button>
           </div>
         )}
 
         {isLoading && trades.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 opacity-40">
-            <RefreshCw size={40} className="animate-spin mb-4" />
+            <RefreshCw size={40} className="animate-spin mb-4 text-emerald-500" />
             <p className="font-mono text-sm">Initializing dashboard...</p>
           </div>
         ) : (
@@ -154,8 +154,8 @@ export default function App() {
                 <div className="mb-12">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2">
-                      <LayoutDashboard size={20} />
-                      <h2 className="font-serif italic text-2xl">Performance Overview</h2>
+                      <LayoutDashboard size={20} className="text-emerald-500" />
+                      <h2 className="font-serif italic text-2xl text-white">Performance Overview</h2>
                     </div>
                     <TradeForm onAdd={handleAddTrade} />
                   </div>
@@ -165,8 +165,8 @@ export default function App() {
                 {/* Middle Section: History */}
                 <div className="mb-12">
                   <div className="flex items-center gap-2 mb-6">
-                    <History size={20} />
-                    <h2 className="font-serif italic text-2xl">Recent Executions</h2>
+                    <History size={20} className="text-emerald-500" />
+                    <h2 className="font-serif italic text-2xl text-white">Recent Executions</h2>
                   </div>
                   <TradeList trades={trades} onDelete={handleDeleteTrade} onEdit={setEditingTrade} />
                 </div>
@@ -183,8 +183,8 @@ export default function App() {
                 {/* Bottom Section: Chart */}
                 <div className="mb-12">
                   <div className="flex items-center gap-2 mb-6">
-                    <TrendingUp size={20} />
-                    <h2 className="font-serif italic text-2xl">Equity Curve</h2>
+                    <TrendingUp size={20} className="text-emerald-500" />
+                    <h2 className="font-serif italic text-2xl text-white">Equity Curve</h2>
                   </div>
                   <EquityCurve trades={trades} />
                 </div>
@@ -205,10 +205,13 @@ export default function App() {
       </main>
 
       {/* Footer / Status Bar */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-black h-10 flex items-center px-4 z-40">
-        <div className="max-w-7xl mx-auto w-full flex items-center justify-between text-[10px] uppercase font-bold tracking-widest opacity-40">
+      <footer className="fixed bottom-0 left-0 right-0 bg-zinc-950/80 backdrop-blur-md border-t border-white/5 h-10 flex items-center px-4 z-40">
+        <div className="max-w-7xl mx-auto w-full flex items-center justify-between text-[10px] uppercase font-bold tracking-widest text-zinc-500">
           <div className="flex gap-4">
-            <span>Status: Connected</span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
+              Status: Connected
+            </span>
             <span>Database: SQLite 3</span>
           </div>
           <div>

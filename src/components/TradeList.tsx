@@ -71,26 +71,26 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, onEdit }
   };
 
   return (
-    <div className="card-brutal overflow-hidden">
-      <div className="p-4 border-b border-black bg-black/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h3 className="font-serif italic text-lg">Trade History</h3>
+    <div className="glass-card overflow-hidden rounded-2xl">
+      <div className="p-4 border-b border-white/5 bg-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h3 className="font-serif italic text-lg text-white">Trade History</h3>
         
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
-            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 opacity-40" />
+            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
               type="text"
               placeholder="Search symbol..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 pr-3 py-1.5 border border-black text-xs font-mono focus:outline-none focus:ring-2 focus:ring-black/5 w-40"
+              className="pl-8 pr-3 py-1.5 bg-zinc-900/50 border border-white/10 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 w-40 rounded-md text-zinc-100"
             />
           </div>
           
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as any)}
-            className="px-2 py-1.5 border border-black text-xs font-mono focus:outline-none"
+            className="px-2 py-1.5 bg-zinc-900/50 border border-white/10 text-xs font-mono focus:outline-none rounded-md text-zinc-300"
           >
             <option value="All">All Types</option>
             <option value="Option">Option</option>
@@ -100,7 +100,7 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, onEdit }
           <select
             value={sideFilter}
             onChange={(e) => setSideFilter(e.target.value as any)}
-            className="px-2 py-1.5 border border-black text-xs font-mono focus:outline-none"
+            className="px-2 py-1.5 bg-zinc-900/50 border border-white/10 text-xs font-mono focus:outline-none rounded-md text-zinc-300"
           >
             <option value="All">All Sides</option>
             <option value="Long">Long</option>
@@ -112,38 +112,38 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, onEdit }
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-white">
-              <th className="p-4 data-grid-header cursor-pointer hover:bg-black/5" onClick={() => handleSort('trade_date')}>
+            <tr className="bg-white/5">
+              <th className="p-4 data-grid-header cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleSort('trade_date')}>
                 <div className="flex items-center gap-1">Date <SortIcon column="trade_date" /></div>
               </th>
-              <th className="p-4 data-grid-header cursor-pointer hover:bg-black/5" onClick={() => handleSort('symbol')}>
+              <th className="p-4 data-grid-header cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleSort('symbol')}>
                 <div className="flex items-center gap-1">Symbol <SortIcon column="symbol" /></div>
               </th>
-              <th className="p-4 data-grid-header cursor-pointer hover:bg-black/5" onClick={() => handleSort('asset_type')}>
+              <th className="p-4 data-grid-header cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleSort('asset_type')}>
                 <div className="flex items-center gap-1">Type <SortIcon column="asset_type" /></div>
               </th>
-              <th className="p-4 data-grid-header cursor-pointer hover:bg-black/5" onClick={() => handleSort('side')}>
+              <th className="p-4 data-grid-header cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleSort('side')}>
                 <div className="flex items-center gap-1">Side <SortIcon column="side" /></div>
               </th>
-              <th className="p-4 data-grid-header text-right cursor-pointer hover:bg-black/5" onClick={() => handleSort('quantity')}>
+              <th className="p-4 data-grid-header text-right cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleSort('quantity')}>
                 <div className="flex items-center justify-end gap-1">Qty <SortIcon column="quantity" /></div>
               </th>
-              <th className="p-4 data-grid-header text-right cursor-pointer hover:bg-black/5" onClick={() => handleSort('entry_price')}>
+              <th className="p-4 data-grid-header text-right cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleSort('entry_price')}>
                 <div className="flex items-center justify-end gap-1">Entry <SortIcon column="entry_price" /></div>
               </th>
-              <th className="p-4 data-grid-header text-right cursor-pointer hover:bg-black/5" onClick={() => handleSort('exit_price')}>
+              <th className="p-4 data-grid-header text-right cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleSort('exit_price')}>
                 <div className="flex items-center justify-end gap-1">Exit <SortIcon column="exit_price" /></div>
               </th>
-              <th className="p-4 data-grid-header text-right cursor-pointer hover:bg-black/5" onClick={() => handleSort('pnl')}>
+              <th className="p-4 data-grid-header text-right cursor-pointer hover:bg-white/5 transition-colors" onClick={() => handleSort('pnl')}>
                 <div className="flex items-center justify-end gap-1">PnL <SortIcon column="pnl" /></div>
               </th>
               <th className="p-4 data-grid-header text-center">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-black/10">
+          <tbody className="divide-y divide-white/5">
             {filteredAndSortedTrades.length === 0 ? (
               <tr>
-                <td colSpan={9} className="p-8 text-center opacity-40 italic">
+                <td colSpan={9} className="p-8 text-center text-zinc-500 italic">
                   {trades.length === 0 ? "No trades recorded yet." : "No trades match your filters."}
                 </td>
               </tr>
@@ -153,38 +153,38 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, onEdit }
                 const isProfit = pnl >= 0;
 
                 return (
-                  <tr key={trade.id} className="hover:bg-black/5 transition-colors group">
-                    <td className="p-4 text-xs font-mono opacity-60">
+                  <tr key={trade.id} className="hover:bg-white/5 transition-colors group">
+                    <td className="p-4 text-xs font-mono text-zinc-500">
                       {format(new Date(trade.trade_date), 'MM/dd HH:mm')}
                     </td>
-                    <td className="p-4 font-bold tracking-tight">
+                    <td className="p-4 font-bold tracking-tight text-zinc-100">
                       {trade.symbol}
                     </td>
                     <td className="p-4">
-                      <span className="text-[10px] px-1.5 py-0.5 border border-black/20 rounded uppercase font-bold opacity-60">
+                      <span className="text-[10px] px-1.5 py-0.5 border border-white/10 rounded uppercase font-bold text-zinc-500">
                         {trade.asset_type}
                       </span>
                     </td>
                     <td className="p-4">
                       <span className={cn(
                         "text-[10px] px-1.5 py-0.5 rounded uppercase font-bold",
-                        trade.side === 'Long' ? "bg-emerald-100 text-emerald-800" : "bg-orange-100 text-orange-800"
+                        trade.side === 'Long' ? "bg-emerald-500/10 text-emerald-400" : "bg-orange-500/10 text-orange-400"
                       )}>
                         {trade.side}
                       </span>
                     </td>
-                    <td className="p-4 text-right data-value">
+                    <td className="p-4 text-right data-value text-zinc-300">
                       {trade.quantity}
                     </td>
-                    <td className="p-4 text-right data-value">
+                    <td className="p-4 text-right data-value text-zinc-300">
                       {formatCurrency(trade.entry_price)}
                     </td>
-                    <td className="p-4 text-right data-value">
+                    <td className="p-4 text-right data-value text-zinc-300">
                       {formatCurrency(trade.exit_price)}
                     </td>
                     <td className={cn(
                       "p-4 text-right data-value font-bold",
-                      isProfit ? "text-emerald-600" : "text-rose-600"
+                      isProfit ? "text-emerald-400" : "text-rose-400"
                     )}>
                       <div className="flex items-center justify-end gap-1">
                         {isProfit ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
@@ -195,14 +195,14 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, onEdit }
                       <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => onEdit(trade)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                          className="p-2 text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-md transition-colors"
                           title="Edit Trade"
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => onDelete(trade.id)}
-                          className="p-2 text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                          className="p-2 text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-md transition-colors"
                           title="Delete Trade"
                         >
                           <Trash2 size={16} />
