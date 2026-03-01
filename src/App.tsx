@@ -4,7 +4,7 @@ import { TradeForm } from './components/TradeForm';
 import { TradeList } from './components/TradeList';
 import { StatsDashboard, EquityCurve } from './components/StatsDashboard';
 import { Journal } from './components/Journal';
-import { LayoutDashboard, History, PlusCircle, RefreshCw, TrendingUp, BookOpen } from 'lucide-react';
+import { LayoutDashboard, History, PlusCircle, RefreshCw, TrendingUp, BookOpen, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
 
@@ -76,6 +76,64 @@ export default function App() {
     }
   };
 
+  const handleExportCSV = async () => {
+    try {
+      // Export Trades
+      if (trades.length > 0) {
+        const tradeHeaders = ['ID', 'Symbol', 'Asset Type', 'Side', 'Quantity', 'Entry Price', 'Exit Price', 'Fees', 'Date', 'Notes'];
+        const tradeRows = trades.map(t => [
+          t.id,
+          t.symbol,
+          t.asset_type,
+          t.side,
+          t.quantity,
+          t.entry_price,
+          t.exit_price,
+          t.fees,
+          t.trade_date,
+          `"${(t.notes || '').replace(/"/g, '""')}"`
+        ]);
+        
+        const csvContent = [tradeHeaders.join(','), ...tradeRows.map(r => r.join(','))].join('\n');
+        downloadCSV(csvContent, `trades_backup_${new Date().toISOString().slice(0, 10)}.csv`);
+      }
+
+      // Export Reviews
+      const reviewsRes = await fetch('/api/reviews');
+      if (reviewsRes.ok) {
+        const reviews = await reviewsRes.json();
+        if (reviews.length > 0) {
+          const reviewHeaders = ['ID', 'Title', 'Content', 'Date', 'Created At'];
+          const reviewRows = reviews.map((r: any) => [
+            r.id,
+            `"${(r.title || '').replace(/"/g, '""')}"`,
+            `"${(r.content || '').replace(/"/g, '""')}"`,
+            r.date,
+            r.created_at
+          ]);
+          
+          const csvContent = [reviewHeaders.join(','), ...reviewRows.map(r => r.join(','))].join('\n');
+          downloadCSV(csvContent, `journal_backup_${new Date().toISOString().slice(0, 10)}.csv`);
+        }
+      }
+    } catch (err) {
+      console.error('Export failed', err);
+      alert('Export failed. Please try again.');
+    }
+  };
+
+  const downloadCSV = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 pb-20 selection:bg-emerald-500/30">
       {/* Navigation Rail / Header */}
@@ -107,6 +165,17 @@ export default function App() {
                 )}
               >
                 Thoughts
+              </button>
+              
+              <div className="w-px h-4 bg-white/10 mx-2" />
+              
+              <button
+                onClick={handleExportCSV}
+                className="flex items-center gap-2 px-4 py-2 text-[11px] uppercase font-bold tracking-widest text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/5 transition-all duration-300 rounded-md"
+                title="Export Data to CSV"
+              >
+                <Download size={14} />
+                Export CSV
               </button>
             </nav>
           </div>
