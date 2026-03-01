@@ -113,7 +113,7 @@ export const EquityCurve: React.FC<StatsDashboardProps> = React.memo(({ trades }
   return (
     <div className="glass-card p-6 h-[400px] rounded-2xl">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-serif italic text-lg text-white">Equity Curve</h3>
+        <h3 className="font-serif text-lg text-white">Equity Curve</h3>
         <div className="text-[11px] uppercase font-bold tracking-wider text-zinc-500">
           Cumulative Performance
         </div>

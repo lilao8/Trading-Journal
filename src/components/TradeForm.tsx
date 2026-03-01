@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AssetType, Side, TradeFormData, Trade } from '../types';
 import { Plus, X, Sparkles, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { cn, calculatePnL, formatCurrency } from '../lib/utils';
+import { cn, calculatePnL, formatCurrency, getCurrentESTDate } from '../lib/utils';
 import { GoogleGenAI } from "@google/genai";
 
 interface TradeFormProps {
@@ -35,7 +35,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
       entry_price: 0,
       exit_price: 0,
       fees: 0,
-      trade_date: new Date().toISOString().slice(0, 16),
+      trade_date: getCurrentESTDate(true),
       notes: '',
     }
   );
@@ -73,7 +73,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
         entry_price: 0,
         exit_price: 0,
         fees: 0,
-        trade_date: new Date().toISOString().slice(0, 16),
+        trade_date: getCurrentESTDate(true),
         notes: '',
       });
     }
@@ -117,8 +117,14 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: ['quantity', 'entry_price', 'exit_price', 'fees'].includes(name) ? parseFloat(value) || 0 : value
+      [name]: ['quantity', 'entry_price', 'exit_price', 'fees'].includes(name) 
+        ? parseFloat(value) || 0 
+        : (name === 'symbol' ? value.toUpperCase() : value)
     }));
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
   };
 
   return (
@@ -153,7 +159,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                 <X size={20} />
               </button>
 
-              <h2 className="font-serif italic text-3xl mb-8 text-white">
+              <h2 className="font-serif text-3xl mb-8 text-white">
                 {initialData ? 'Refine Execution' : 'Log New Execution'}
               </h2>
 
@@ -167,7 +173,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                       value={formData.symbol}
                       onChange={handleChange}
                       placeholder="e.g. SPY"
-                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
+                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white h-[50px]"
                     />
                   </div>
                   <div className="space-y-2">
@@ -176,7 +182,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                       name="asset_type"
                       value={formData.asset_type}
                       onChange={handleChange}
-                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
+                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white h-[50px]"
                     >
                       <option value="Option">Option</option>
                       <option value="ETF">ETF</option>
@@ -184,12 +190,12 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Side</label>
-                    <div className="flex p-1 bg-zinc-900/50 border border-white/10 rounded-xl">
+                    <div className="flex p-1 bg-zinc-900/50 border border-white/10 rounded-xl h-[50px]">
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, side: 'Long' })}
                         className={cn(
-                          "flex-1 py-2 text-xs font-bold rounded-lg transition-all",
+                          "flex-1 text-xs font-bold rounded-lg transition-all",
                           formData.side === 'Long' ? "bg-emerald-500 text-zinc-950 shadow-lg" : "text-zinc-500 hover:text-zinc-300"
                         )}
                       >
@@ -199,8 +205,8 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                         type="button"
                         onClick={() => setFormData({ ...formData, side: 'Short' })}
                         className={cn(
-                          "flex-1 py-2 text-xs font-bold rounded-lg transition-all",
-                          formData.side === 'Short' ? "bg-orange-500 text-zinc-950 shadow-lg" : "text-zinc-500 hover:text-zinc-300"
+                          "flex-1 text-xs font-bold rounded-lg transition-all",
+                          formData.side === 'Short' ? "bg-rose-500 text-zinc-950 shadow-lg" : "text-zinc-500 hover:text-zinc-300"
                         )}
                       >
                         SHORT
@@ -219,6 +225,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                       required
                       value={formData.quantity}
                       onChange={handleChange}
+                      onFocus={handleFocus}
                       className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
                     />
                   </div>
@@ -231,7 +238,8 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                       required
                       value={formData.entry_price}
                       onChange={handleChange}
-                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
+                      onFocus={handleFocus}
+                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
                   <div className="space-y-2">
@@ -243,7 +251,8 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                       required
                       value={formData.exit_price}
                       onChange={handleChange}
-                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
+                      onFocus={handleFocus}
+                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
                   <div className="space-y-2">
@@ -254,7 +263,8 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                       step="any"
                       value={formData.fees}
                       onChange={handleChange}
-                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
+                      onFocus={handleFocus}
+                      className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
                 </div>
@@ -267,7 +277,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                     required
                     value={formData.trade_date}
                     onChange={handleChange}
-                    className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white"
+                    className="w-full bg-zinc-900/50 border border-white/10 p-3 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500/50 rounded-xl text-white [&::-webkit-calendar-picker-indicator]:invert"
                   />
                 </div>
 
@@ -293,7 +303,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
                       <Sparkles size={14} />
                       <span className="text-[10px] uppercase font-bold tracking-widest">AI Deep Review</span>
                     </div>
-                    <p className="text-sm italic text-zinc-300 leading-relaxed">
+                    <p className="text-sm text-zinc-300 leading-relaxed">
                       "{aiReview}"
                     </p>
                   </motion.div>

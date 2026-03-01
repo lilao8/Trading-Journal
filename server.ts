@@ -95,7 +95,7 @@ async function startServer() {
 
   app.get("/api/reviews", (req, res) => {
     try {
-      const reviews = db.prepare("SELECT * FROM reviews ORDER BY date DESC").all();
+      const reviews = db.prepare("SELECT * FROM reviews ORDER BY date DESC, created_at DESC").all();
       res.json(reviews);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch reviews" });
@@ -153,6 +153,23 @@ async function startServer() {
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch stats" });
     }
+  });
+
+  app.post("/api/shutdown", (req, res) => {
+    res.json({ message: "Shutting down and running backup..." });
+    console.log("Shutdown signal received. Exiting process...");
+    
+    // Execute backup script if it exists, then exit
+    import("child_process").then(({ exec }) => {
+      exec("sh backup.sh", (error) => {
+        if (error) {
+          console.error("Backup script failed or not found:", error.message);
+        } else {
+          console.log("Backup completed successfully.");
+        }
+        process.exit(0);
+      });
+    });
   });
 
   // Vite middleware for development

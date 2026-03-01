@@ -73,7 +73,7 @@ export const TradeList: React.FC<TradeListProps> = React.memo(({ trades, onDelet
   return (
     <div className="glass-card overflow-hidden rounded-2xl">
       <div className="p-4 border-b border-white/5 bg-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h3 className="font-serif italic text-lg text-white">Trade History</h3>
+        <h3 className="font-serif text-lg text-white">Trade History</h3>
         
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
@@ -143,7 +143,7 @@ export const TradeList: React.FC<TradeListProps> = React.memo(({ trades, onDelet
           <tbody className="divide-y divide-white/5">
             {filteredAndSortedTrades.length === 0 ? (
               <tr>
-                <td colSpan={9} className="p-8 text-center text-zinc-500 italic">
+                <td colSpan={9} className="p-8 text-center text-zinc-500">
                   {trades.length === 0 ? "No trades recorded yet." : "No trades match your filters."}
                 </td>
               </tr>
@@ -168,7 +168,7 @@ export const TradeList: React.FC<TradeListProps> = React.memo(({ trades, onDelet
                     <td className="p-4">
                       <span className={cn(
                         "text-[10px] px-1.5 py-0.5 rounded uppercase font-bold",
-                        trade.side === 'Long' ? "bg-emerald-500/10 text-emerald-400" : "bg-orange-500/10 text-orange-400"
+                        trade.side === 'Long' ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
                       )}>
                         {trade.side}
                       </span>

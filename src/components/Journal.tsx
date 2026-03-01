@@ -3,7 +3,7 @@ import { Review, ReviewFormData } from '../types';
 import { Plus, Trash2, Edit2, Calendar, BookOpen, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
-import { cn } from '../lib/utils';
+import { cn, getCurrentESTDate, parseLocalDate } from '../lib/utils';
 
 export const Journal: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -13,7 +13,7 @@ export const Journal: React.FC = () => {
   const [formData, setFormData] = useState<ReviewFormData>({
     title: '',
     content: '',
-    date: new Date().toISOString().slice(0, 10),
+    date: getCurrentESTDate(),
   });
 
   const fetchReviews = async () => {
@@ -54,7 +54,7 @@ export const Journal: React.FC = () => {
         setFormData({
           title: '',
           content: '',
-          date: new Date().toISOString().slice(0, 10),
+          date: getCurrentESTDate(),
         });
       }
     } catch (error) {
@@ -89,7 +89,7 @@ export const Journal: React.FC = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BookOpen size={24} className="text-emerald-500" />
-          <h2 className="font-serif italic text-2xl text-white">Trading Thoughts & Reviews</h2>
+          <h2 className="font-serif text-2xl text-white">Trading Thoughts & Reviews</h2>
         </div>
         <button
           onClick={() => {
@@ -97,7 +97,7 @@ export const Journal: React.FC = () => {
             setFormData({
               title: '',
               content: '',
-              date: new Date().toISOString().slice(0, 10),
+              date: getCurrentESTDate(),
             });
             setIsFormOpen(true);
           }}
@@ -115,7 +115,7 @@ export const Journal: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 gap-6">
           {reviews.length === 0 ? (
-            <div className="glass-card p-12 text-center text-zinc-500 italic rounded-2xl">
+            <div className="glass-card p-12 text-center text-zinc-500 rounded-2xl">
               No journal entries yet. Start writing your thoughts!
             </div>
           ) : (
@@ -131,9 +131,9 @@ export const Journal: React.FC = () => {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest text-zinc-500">
                       <Calendar size={12} />
-                      {format(new Date(review.date), 'MMMM dd, yyyy')}
+                      {format(parseLocalDate(review.date), 'MMMM dd, yyyy')}
                     </div>
-                    <h3 className="font-serif italic text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
+                    <h3 className="font-serif text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
                       {review.title}
                     </h3>
                   </div>
@@ -183,7 +183,7 @@ export const Journal: React.FC = () => {
                 <X size={20} />
               </button>
 
-              <h2 className="font-serif italic text-3xl mb-8 text-white">
+              <h2 className="font-serif text-3xl mb-8 text-white">
                 {editingReview ? 'Refine Entry' : 'Capture Entry'}
               </h2>
 

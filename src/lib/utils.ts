@@ -27,3 +27,33 @@ export function formatPercent(value: number) {
     minimumFractionDigits: 2,
   }).format(value);
 }
+
+export function getCurrentESTDate(includeTime = false) {
+  const now = new Date();
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  if (includeTime) {
+    options.hour = "2-digit";
+    options.minute = "2-digit";
+    options.hour12 = false;
+  }
+  
+  const formatter = new Intl.DateTimeFormat("en-CA", options); // en-CA gives YYYY-MM-DD
+  const parts = formatter.formatToParts(now);
+  const getPart = (type: string) => parts.find(p => p.type === type)?.value;
+  
+  const dateStr = `${getPart('year')}-${getPart('month')}-${getPart('day')}`;
+  if (includeTime) {
+    return `${dateStr}T${getPart('hour')}:${getPart('minute')}`;
+  }
+  return dateStr;
+}
+
+export function parseLocalDate(dateStr: string) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}

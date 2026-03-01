@@ -4,7 +4,7 @@ import { TradeForm } from './components/TradeForm';
 import { TradeList } from './components/TradeList';
 import { StatsDashboard, EquityCurve } from './components/StatsDashboard';
 import { Journal } from './components/Journal';
-import { LayoutDashboard, History, PlusCircle, RefreshCw, TrendingUp, BookOpen, Download } from 'lucide-react';
+import { LayoutDashboard, History, PlusCircle, RefreshCw, TrendingUp, BookOpen, Download, Power } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
 
@@ -134,6 +134,21 @@ export default function App() {
     document.body.removeChild(link);
   };
 
+  const handleShutdown = async () => {
+    if (!confirm('Are you sure you want to shut down the server and run backup?')) return;
+    try {
+      const response = await fetch('/api/shutdown', { method: 'POST' });
+      if (response.ok) {
+        alert('Shutdown signal sent. The server will exit shortly.');
+        window.close(); // Try to close the window
+      } else {
+        throw new Error('Shutdown failed');
+      }
+    } catch (err) {
+      alert('Error sending shutdown signal.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 pb-20 selection:bg-emerald-500/30">
       {/* Navigation Rail / Header */}
@@ -142,9 +157,9 @@ export default function App() {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-emerald-500 flex items-center justify-center rounded-sm shadow-md">
-                <span className="text-zinc-950 font-serif italic font-bold">S</span>
+                <span className="text-zinc-950 font-serif font-bold">T</span>
               </div>
-              <h1 className="font-serif italic text-xl font-bold tracking-tight text-white">ScalpJournal</h1>
+              <h1 className="font-serif text-xl font-bold tracking-tight text-white">TradingJournal</h1>
             </div>
 
             <nav className="flex items-center gap-1">
@@ -188,6 +203,13 @@ export default function App() {
             >
               <RefreshCw size={18} className={isLoading ? "animate-spin" : ""} />
             </button>
+            <button 
+              onClick={handleShutdown}
+              className="p-2 hover:bg-rose-500/10 rounded-full transition-colors text-zinc-400 hover:text-rose-500"
+              title="Shutdown Server & Backup"
+            >
+              <Power size={18} />
+            </button>
             <div className="h-6 w-px bg-white/10" />
             <div className="text-[11px] uppercase font-bold tracking-widest text-zinc-500">
               {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -224,7 +246,7 @@ export default function App() {
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2">
                       <LayoutDashboard size={20} className="text-emerald-500" />
-                      <h2 className="font-serif italic text-2xl text-white">Performance Overview</h2>
+                      <h2 className="font-serif text-2xl text-white">Performance Overview</h2>
                     </div>
                     <TradeForm onAdd={handleAddTrade} />
                   </div>
@@ -235,7 +257,7 @@ export default function App() {
                 <div className="mb-12">
                   <div className="flex items-center gap-2 mb-6">
                     <History size={20} className="text-emerald-500" />
-                    <h2 className="font-serif italic text-2xl text-white">Recent Executions</h2>
+                    <h2 className="font-serif text-2xl text-white">Recent Executions</h2>
                   </div>
                   <TradeList trades={trades} onDelete={handleDeleteTrade} onEdit={setEditingTrade} />
                 </div>
@@ -253,7 +275,7 @@ export default function App() {
                 <div className="mb-12">
                   <div className="flex items-center gap-2 mb-6">
                     <TrendingUp size={20} className="text-emerald-500" />
-                    <h2 className="font-serif italic text-2xl text-white">Equity Curve</h2>
+                    <h2 className="font-serif text-2xl text-white">Equity Curve</h2>
                   </div>
                   <EquityCurve trades={trades} />
                 </div>
