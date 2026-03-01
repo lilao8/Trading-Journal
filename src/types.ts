@@ -25,3 +25,17 @@ export interface TradeFormData {
   trade_date: string;
   notes: string;
 }
+
+export interface Review {
+  id: number;
+  title: string;
+  content: string;
+  date: string;
+  created_at: string;
+}
+
+export interface ReviewFormData {
+  title: string;
+  content: string;
+  date: string;
+}

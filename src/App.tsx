@@ -3,14 +3,17 @@ import { Trade, TradeFormData } from './types';
 import { TradeForm } from './components/TradeForm';
 import { TradeList } from './components/TradeList';
 import { StatsDashboard, EquityCurve } from './components/StatsDashboard';
-import { LayoutDashboard, History, PlusCircle, RefreshCw, TrendingUp } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Journal } from './components/Journal';
+import { LayoutDashboard, History, PlusCircle, RefreshCw, TrendingUp, BookOpen } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { cn } from './lib/utils';
 
 export default function App() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editingTrade, setEditingTrade] = useState<Trade | null>(null);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'journal'>('dashboard');
 
   const fetchTrades = async () => {
     setIsLoading(true);
@@ -78,11 +81,34 @@ export default function App() {
       {/* Navigation Rail / Header */}
       <header className="bg-white border-b border-black sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-black flex items-center justify-center">
-              <span className="text-white font-serif italic font-bold">S</span>
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-black flex items-center justify-center">
+                <span className="text-white font-serif italic font-bold">S</span>
+              </div>
+              <h1 className="font-serif italic text-xl font-bold tracking-tight">ScalpJournal</h1>
             </div>
-            <h1 className="font-serif italic text-xl font-bold tracking-tight">ScalpJournal</h1>
+
+            <nav className="flex items-center gap-1">
+              <button
+                onClick={() => setActiveTab('dashboard')}
+                className={cn(
+                  "px-4 py-2 text-[11px] uppercase font-bold tracking-widest transition-colors",
+                  activeTab === 'dashboard' ? "bg-black text-white" : "hover:bg-black/5"
+                )}
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => setActiveTab('journal')}
+                className={cn(
+                  "px-4 py-2 text-[11px] uppercase font-bold tracking-widest transition-colors",
+                  activeTab === 'journal' ? "bg-black text-white" : "hover:bg-black/5"
+                )}
+              >
+                Thoughts
+              </button>
+            </nav>
           </div>
           
           <div className="flex items-center gap-4">
@@ -115,50 +141,66 @@ export default function App() {
             <p className="font-mono text-sm">Initializing dashboard...</p>
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            {/* Top Section: Stats & Form */}
-            <div className="mb-12">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <LayoutDashboard size={20} />
-                  <h2 className="font-serif italic text-2xl">Performance Overview</h2>
+          <AnimatePresence mode="wait">
+            {activeTab === 'dashboard' ? (
+              <motion.div
+                key="dashboard"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {/* Top Section: Stats & Form */}
+                <div className="mb-12">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                      <LayoutDashboard size={20} />
+                      <h2 className="font-serif italic text-2xl">Performance Overview</h2>
+                    </div>
+                    <TradeForm onAdd={handleAddTrade} />
+                  </div>
+                  <StatsDashboard trades={trades} />
                 </div>
-                <TradeForm onAdd={handleAddTrade} />
-              </div>
-              <StatsDashboard trades={trades} />
-            </div>
 
-            {/* Middle Section: History */}
-            <div className="mb-12">
-              <div className="flex items-center gap-2 mb-6">
-                <History size={20} />
-                <h2 className="font-serif italic text-2xl">Recent Executions</h2>
-              </div>
-              <TradeList trades={trades} onDelete={handleDeleteTrade} onEdit={setEditingTrade} />
-            </div>
+                {/* Middle Section: History */}
+                <div className="mb-12">
+                  <div className="flex items-center gap-2 mb-6">
+                    <History size={20} />
+                    <h2 className="font-serif italic text-2xl">Recent Executions</h2>
+                  </div>
+                  <TradeList trades={trades} onDelete={handleDeleteTrade} onEdit={setEditingTrade} />
+                </div>
 
-            {editingTrade && (
-              <TradeForm 
-                initialData={editingTrade} 
-                onUpdate={handleUpdateTrade} 
-                onAdd={() => {}} 
-                onClose={() => setEditingTrade(null)} 
-              />
+                {editingTrade && (
+                  <TradeForm 
+                    initialData={editingTrade} 
+                    onUpdate={handleUpdateTrade} 
+                    onAdd={() => {}} 
+                    onClose={() => setEditingTrade(null)} 
+                  />
+                )}
+
+                {/* Bottom Section: Chart */}
+                <div className="mb-12">
+                  <div className="flex items-center gap-2 mb-6">
+                    <TrendingUp size={20} />
+                    <h2 className="font-serif italic text-2xl">Equity Curve</h2>
+                  </div>
+                  <EquityCurve trades={trades} />
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="journal"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Journal />
+              </motion.div>
             )}
-
-            {/* Bottom Section: Chart */}
-            <div className="mb-12">
-              <div className="flex items-center gap-2 mb-6">
-                <TrendingUp size={20} />
-                <h2 className="font-serif italic text-2xl">Equity Curve</h2>
-              </div>
-              <EquityCurve trades={trades} />
-            </div>
-          </motion.div>
+          </AnimatePresence>
         )}
       </main>
 

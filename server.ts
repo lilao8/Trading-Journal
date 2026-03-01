@@ -25,6 +25,16 @@ db.exec(`
   )
 `);
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    date TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -80,6 +90,57 @@ async function startServer() {
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete trade" });
+    }
+  });
+
+  app.get("/api/reviews", (req, res) => {
+    try {
+      const reviews = db.prepare("SELECT * FROM reviews ORDER BY date DESC").all();
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+
+  app.post("/api/reviews", (req, res) => {
+    const { title, content, date } = req.body;
+    try {
+      const info = db.prepare(`
+        INSERT INTO reviews (title, content, date)
+        VALUES (?, ?, ?)
+      `).run(title, content, date);
+      
+      const newReview = db.prepare("SELECT * FROM reviews WHERE id = ?").get(info.lastInsertRowid);
+      res.status(201).json(newReview);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add review" });
+    }
+  });
+
+  app.put("/api/reviews/:id", (req, res) => {
+    const { id } = req.params;
+    const { title, content, date } = req.body;
+    try {
+      db.prepare(`
+        UPDATE reviews 
+        SET title = ?, content = ?, date = ?
+        WHERE id = ?
+      `).run(title, content, date, id);
+      
+      const updatedReview = db.prepare("SELECT * FROM reviews WHERE id = ?").get(id);
+      res.json(updatedReview);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update review" });
+    }
+  });
+
+  app.delete("/api/reviews/:id", (req, res) => {
+    const { id } = req.params;
+    try {
+      db.prepare("DELETE FROM reviews WHERE id = ?").run(id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete review" });
     }
   });
 
