@@ -135,20 +135,20 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onAdd, onUpdate, initialDa
 
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-zinc-950/90 z-50 flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2 }}
               className="glass-card w-full max-w-2xl p-8 relative rounded-3xl overflow-hidden"
             >
-              {/* Decorative Glow */}
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 blur-3xl rounded-full"></div>
-              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-emerald-500/5 blur-3xl rounded-full"></div>
+              {/* Decorative Glow - Simplified */}
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/5 rounded-full"></div>
 
               <button
                 onClick={handleClose}
-                className="absolute top-6 right-6 p-2 text-zinc-500 hover:text-white hover:bg-white/5 rounded-full transition-all"
+                className="absolute top-6 right-6 p-2 text-zinc-500 hover:text-white hover:bg-white/5 rounded-full transition-colors"
               >
                 <X size={20} />
               </button>

@@ -14,27 +14,26 @@
 
 @layer components {
   .glass-card {
-    @apply bg-zinc-900/40 backdrop-blur-xl border border-white/5 shadow-2xl;
+    @apply bg-zinc-900 border border-white/10 shadow-lg;
   }
 
   .glass-card-hover {
-    @apply hover:bg-zinc-900/60 hover:border-emerald-500/20 transition-all duration-300;
+    @apply hover:border-emerald-500/30 transition-[border-color,background-color] duration-200;
   }
 
   .btn-glow {
     @apply relative overflow-hidden bg-emerald-500 text-zinc-950 font-bold px-6 py-2 rounded-lg 
-           shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]
-           transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
-    animation: breathing 3s ease-in-out infinite;
+           shadow-md hover:shadow-emerald-500/20
+           transition-[transform,opacity,shadow] duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-glow-secondary {
-    @apply border border-emerald-500/50 text-emerald-500 font-bold px-6 py-2 rounded-lg
-           hover:bg-emerald-500/10 transition-all duration-300;
+    @apply border border-emerald-500/30 text-emerald-500 font-bold px-6 py-2 rounded-lg
+           hover:bg-emerald-500/5 transition-[background-color,border-color] duration-200;
   }
 
   .data-grid-header {
-    @apply text-[10px] uppercase font-bold tracking-widest text-zinc-500 border-b border-white/5;
+    @apply text-[10px] uppercase font-bold tracking-widest text-zinc-600 border-b border-white/5;
   }
 
   .data-value {
@@ -42,9 +41,10 @@
   }
 }
 
+/* Simplified breathing animation without heavy blur */
 @keyframes breathing {
-  0%, 100% { box-shadow: 0 0 15px rgba(16,185,129,0.3); }
-  50% { box-shadow: 0 0 35px rgba(16,185,129,0.6); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
 
 /* Custom scrollbar */

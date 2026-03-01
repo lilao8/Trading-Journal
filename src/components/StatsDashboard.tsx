@@ -19,7 +19,7 @@ interface StatsDashboardProps {
   trades: Trade[];
 }
 
-export const StatsDashboard: React.FC<StatsDashboardProps> = ({ trades }) => {
+export const StatsDashboard: React.FC<StatsDashboardProps> = React.memo(({ trades }) => {
   const stats = useMemo(() => {
     const now = new Date();
     const today = startOfDay(now);
@@ -83,9 +83,9 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ trades }) => {
       </div>
     </div>
   );
-};
+});
 
-export const EquityCurve: React.FC<StatsDashboardProps> = ({ trades }) => {
+export const EquityCurve: React.FC<StatsDashboardProps> = React.memo(({ trades }) => {
   const chartData = useMemo(() => {
     // Group trades by date
     const tradesByDay: Record<string, number> = {};
@@ -165,9 +165,9 @@ export const EquityCurve: React.FC<StatsDashboardProps> = ({ trades }) => {
       </div>
     </div>
   );
-};
+});
 
-const StatCard = ({ label, value, icon, isCurrency, suffix = "" }: any) => {
+const StatCard = React.memo(({ label, value, icon, isCurrency, suffix = "" }: any) => {
   const isPositive = value >= 0;
   
   return (
@@ -184,4 +184,4 @@ const StatCard = ({ label, value, icon, isCurrency, suffix = "" }: any) => {
       </div>
     </div>
   );
-};
+});

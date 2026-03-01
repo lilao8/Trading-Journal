@@ -12,7 +12,7 @@ interface TradeListProps {
 
 type SortKey = 'trade_date' | 'symbol' | 'asset_type' | 'side' | 'quantity' | 'entry_price' | 'exit_price' | 'pnl';
 
-export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, onEdit }) => {
+export const TradeList: React.FC<TradeListProps> = React.memo(({ trades, onDelete, onEdit }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<AssetType | 'All'>('All');
   const [sideFilter, setSideFilter] = useState<Side | 'All'>('All');
@@ -192,17 +192,17 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, onEdit }
                       </div>
                     </td>
                     <td className="p-4 text-center">
-                      <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <button
                           onClick={() => onEdit(trade)}
-                          className="p-2 text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-md transition-colors"
+                          className="p-2 text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-md transition-colors duration-200"
                           title="Edit Trade"
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => onDelete(trade.id)}
-                          className="p-2 text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-md transition-colors"
+                          className="p-2 text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-md transition-colors duration-200"
                           title="Delete Trade"
                         >
                           <Trash2 size={16} />
@@ -218,5 +218,5 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, onEdit }
       </div>
     </div>
   );
-};
+});
 
