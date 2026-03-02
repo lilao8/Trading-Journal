@@ -1,46 +1,60 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# TradingJournal
 
-# 🪙 Cyber-Journal: AI-Powered Trading Audit System
+A professional-grade trading log and journal application designed for scalp traders and investors. TradingJournal provides a high-performance interface to track executions, analyze performance, and maintain a disciplined trading psychology through AI-powered reviews.
 
-A privacy-focused, high-performance trading journal designed for independent traders. This project demonstrates the power of **Vibe Coding** (Human-AI Collaboration) in building a production-ready local stack.
+## 🚀 Key Features
 
+- **Execution Logging**: Specialized tracking for **Options** and **ETFs** with support for Long/Short sides and fee calculation.
+- **AI Deep Review**: Integrated with **Google Gemini AI** to provide professional, blunt, and insightful feedback on your trade entries and exits.
+- **Performance Dashboard**:
+  - **Equity Curve**: Visual representation of cumulative performance.
+  - **Key Metrics**: Real-time calculation of Win Rate, Profit Factor, Average Win/Loss, and Total PnL.
+- **Trading Thoughts (Journal)**: A dedicated space for recording market sentiment, weekly reviews, and psychological notes. Entries are automatically sorted by date and creation time.
+- **Market Time Alignment**: Optimized for US markets with default **EST (Eastern Standard Time)** handling for all date and time entries.
+- **Safe Shutdown & Backup**: Integrated shutdown control that triggers an automated backup process (`backup.sh`) before safely exiting the application.
+- **Modern Dark UI**: A high-contrast, distraction-free interface built with **Tailwind CSS** and **Framer Motion** for smooth, professional interactions.
 
+## 🛠 Tech Stack
 
-## ✨ Key Features
+- **Frontend**: React 19, Vite, Tailwind CSS, Recharts, Framer Motion, Lucide React.
+- **Backend**: Node.js, Express.
+- **Database**: SQLite (via `better-sqlite3`) for robust, local data persistence.
+- **AI Integration**: Google Gemini API (`@google/genai`).
 
-- **🤖 AI Insights**: Leverages the Gemini 1.5 Pro engine to analyze trade rationales and provide "soul-searching" critiques on discipline and strategy.
-- **🔒 Local-First Privacy**: All data stays on your machine in a SQLite database. No cloud leaks, no subscription fees.
-- **⚡ Native Experience**: Custom macOS Automator wrapper allows for a "One-Click" start (checks environment -> starts server -> opens browser).
-- **🎨 High-Performance UI**: A Cyberpunk-inspired dark mode interface built with Tailwind CSS, optimized for zero-lag interactions.
-- **🔄 Smart Sync**: Integrated `vibe.sh` script automates local backups and pushes code updates to GitHub while strictly excluding sensitive database files.
+## 📦 Installation & Setup
 
-## 🛠️ Tech Stack
-
-- **Frontend**: React 19, TypeScript, Tailwind CSS, Framer Motion
-- **Backend**: Node.js, Express, tsx
-- **Database**: SQLite (Better-SQLite3)
-- **AI Integration**: Google AI Studio (Gemini API)
-- **Tooling**: Bash, macOS Automator
-
-## 🚀 Quick Start
-
-1. **Clone & Install**
+1. **Install Dependencies**:
    ```bash
-   git clone [https://github.com/lilao8/Trading-Journal.git](https://github.com/lilao8/Trading-Journal.git)
-   cd Trading-Journal
    npm install
+   ```
 
-   Environment Setup
-
-2. **Create a .env file in the root:**
-
-   Code snippet
+2. **Environment Configuration**:
+   Ensure you have a `.env` file with your Gemini API key:
+   ```env
    GEMINI_API_KEY=your_api_key_here
-   PORT=3000
+   ```
 
-3. **Launch**
-
-   Bash
+3. **Run Development Server**:
+   ```bash
    npm run dev
+   ```
+
+4. **Build for Production**:
+   ```bash
+   npm run build
+   ```
+
+## 📂 Project Structure
+
+- `/src/components`: Reusable UI components (TradeForm, TradeList, StatsDashboard, Journal).
+- `/src/lib`: Utility functions for PnL calculation and EST date handling.
+- `/server.ts`: Express server with SQLite integration and Vite middleware.
+- `/trades.db`: Local SQLite database file.
+
+## 🛡 Security & Persistence
+
+- **Local Storage**: All trade data and journal entries are stored locally in a SQLite database.
+- **Automated Backups**: The application supports a `backup.sh` script that runs automatically upon clicking the Shutdown button in the header.
+
+---
+*Built for traders who demand precision and discipline.*
