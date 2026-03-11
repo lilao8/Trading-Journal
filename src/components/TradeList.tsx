@@ -127,7 +127,7 @@ export const TradeList: React.FC<TradeListProps> = React.memo(
       });
 
       return result;
-    }, [trades, searchTerm, typeFilter, sideFilter, sortConfig]);
+    }, [trades, searchTerm, typeFilter, sideFilter, sortConfig, timeRange]);
 
     const SortIcon = ({ column }: { column: SortKey }) => {
       if (sortConfig.key !== column)
