@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Trade, AssetType, Side } from '../types';
-import { calculatePnL, formatCurrency, cn } from '../lib/utils';
+import { calculatePnL, formatCurrency, cn, getCurrentESTDate } from '../lib/utils';
 import { Trash2, TrendingUp, TrendingDown, Edit2, Search, Filter, ArrowUp, ArrowDown, ArrowUpDown, Clock } from 'lucide-react';
 import { format, isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
 
@@ -35,12 +35,25 @@ export const TradeList: React.FC<TradeListProps> = React.memo(({ trades, onDelet
 
     // Time Range Filter
     if (timeRange !== 'All') {
+      const currentEst = getCurrentESTDate(); // YYYY-MM-DD
+      const nowEst = new Date(currentEst + 'T00:00:00'); // Use EST date as base for date-fns
+
       result = result.filter((t) => {
-        const date = parseISO(t.trade_date);
-        if (timeRange === 'Today') return isToday(date);
-        if (timeRange === 'Week') return isThisWeek(date, { weekStartsOn: 1 });
-        if (timeRange === 'Month') return isThisMonth(date);
-        if (timeRange === 'Year') return isThisYear(date);
+        // Extract date part YYYY-MM-DD
+        const tradeDateStr = t.trade_date.split('T')[0];
+        
+        if (timeRange === 'Today') {
+          return tradeDateStr === currentEst;
+        }
+
+        // For other ranges, we parse the trade date as a local date to use date-fns
+        // but since we want EST context, we treat the YYYY-MM-DD as the truth
+        const [y, m, d] = tradeDateStr.split('-').map(Number);
+        const tradeDate = new Date(y, m - 1, d);
+        
+        if (timeRange === 'Week') return isThisWeek(tradeDate, { weekStartsOn: 1 });
+        if (timeRange === 'Month') return isThisMonth(tradeDate);
+        if (timeRange === 'Year') return isThisYear(tradeDate);
         return true;
       });
     }
