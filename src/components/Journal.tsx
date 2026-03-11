@@ -35,6 +35,23 @@ export const Journal: React.FC = () => {
     fetchReviews();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFormOpen) {
+        setIsFormOpen(false);
+        setEditingReview(null);
+      }
+    };
+
+    if (isFormOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isFormOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = editingReview ? `/api/reviews/${editingReview.id}` : '/api/reviews';
@@ -165,13 +182,13 @@ export const Journal: React.FC = () => {
 
       <AnimatePresence>
         {isFormOpen && (
-          <div className="fixed inset-0 bg-zinc-950/90 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-zinc-950/90 z-50 flex items-start justify-center p-4 overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="glass-card w-full max-w-2xl p-8 relative rounded-3xl overflow-hidden"
+              className="glass-card w-full max-w-2xl p-8 relative rounded-3xl my-auto"
             >
               {/* Decorative Glow - Simplified */}
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/5 rounded-full"></div>

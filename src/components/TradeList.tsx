@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Trade, AssetType, Side } from '../types';
 import { calculatePnL, formatCurrency, cn } from '../lib/utils';
-import { Trash2, TrendingUp, TrendingDown, Edit2, Search, Filter, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
-import { format } from 'date-fns';
+import { Trash2, TrendingUp, TrendingDown, Edit2, Search, Filter, ArrowUp, ArrowDown, ArrowUpDown, Clock } from 'lucide-react';
+import { format, isToday, isThisWeek, isThisMonth, isThisYear, parseISO } from 'date-fns';
 
 interface TradeListProps {
   trades: Trade[];
@@ -11,11 +11,13 @@ interface TradeListProps {
 }
 
 type SortKey = 'trade_date' | 'symbol' | 'asset_type' | 'side' | 'quantity' | 'entry_price' | 'exit_price' | 'pnl';
+type TimeRange = 'Today' | 'Week' | 'Month' | 'Year' | 'All';
 
 export const TradeList: React.FC<TradeListProps> = React.memo(({ trades, onDelete, onEdit }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<AssetType | 'All'>('All');
   const [sideFilter, setSideFilter] = useState<Side | 'All'>('All');
+  const [timeRange, setTimeRange] = useState<TimeRange>('Today');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' }>({
     key: 'trade_date',
     direction: 'desc',
@@ -30,6 +32,18 @@ export const TradeList: React.FC<TradeListProps> = React.memo(({ trades, onDelet
 
   const filteredAndSortedTrades = useMemo(() => {
     let result = [...trades];
+
+    // Time Range Filter
+    if (timeRange !== 'All') {
+      result = result.filter((t) => {
+        const date = parseISO(t.trade_date);
+        if (timeRange === 'Today') return isToday(date);
+        if (timeRange === 'Week') return isThisWeek(date, { weekStartsOn: 1 });
+        if (timeRange === 'Month') return isThisMonth(date);
+        if (timeRange === 'Year') return isThisYear(date);
+        return true;
+      });
+    }
 
     // Filter
     if (searchTerm) {
@@ -73,7 +87,25 @@ export const TradeList: React.FC<TradeListProps> = React.memo(({ trades, onDelet
   return (
     <div className="glass-card overflow-hidden rounded-2xl">
       <div className="p-4 border-b border-white/5 bg-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h3 className="font-serif text-lg text-white">Trade History</h3>
+        <div className="flex items-center gap-4">
+          <h3 className="font-serif text-lg text-white">Trade History</h3>
+          <div className="flex bg-zinc-900/80 p-0.5 rounded-lg border border-white/5">
+            {(['Today', 'Week', 'Month', 'Year', 'All'] as TimeRange[]).map((range) => (
+              <button
+                key={range}
+                onClick={() => setTimeRange(range)}
+                className={cn(
+                  "px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all",
+                  timeRange === range 
+                    ? "bg-emerald-500 text-zinc-950 shadow-sm" 
+                    : "text-zinc-500 hover:text-zinc-300"
+                )}
+              >
+                {range}
+              </button>
+            ))}
+          </div>
+        </div>
         
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
